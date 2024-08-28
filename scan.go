@@ -450,7 +450,7 @@ func (itr *scanIter) LastEvaluatedKey(ctx context.Context) (PagingKey, error) {
 		if itr.keyErr != nil {
 			// primaryKeys can fail if the credentials lack DescribeTable permissions
 			// in order to preserve backwards compatibility, we fall back to the old behavior and warn
-			// see: https://github.com/guregu/dynamo/pull/187#issuecomment-1045183901
+			// see: https://github.com/connectom-sys/dynamo/pull/187#issuecomment-1045183901
 			return itr.output.LastEvaluatedKey, fmt.Errorf("dynamo: failed to determine LastEvaluatedKey in scan: %w", itr.keyErr)
 		}
 

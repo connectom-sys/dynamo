@@ -12,7 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/smithy-go"
 
-	"github.com/guregu/dynamo/v2/dynamodbiface"
+	"github.com/connectom-sys/dynamo/v2/dynamodbiface"
 )
 
 // DB is a DynamoDB client.
