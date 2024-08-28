@@ -254,7 +254,7 @@ func (info *structInfo) isZero(rv reflect.Value) bool {
 			// TODO: encode NULL?
 			continue
 		}
-		if !field.isZero(fv) {
+		if field.isZero != nil && !field.isZero(fv) {
 			return false
 		}
 	}
