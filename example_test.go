@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
-	"github.com/guregu/dynamo/v2"
+	"github.com/connectom-sys/dynamo/v2"
 )
 
 func ExampleNew() {

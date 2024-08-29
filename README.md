@@ -1,5 +1,5 @@
-## dynamo [![GoDoc](https://godoc.org/github.com/guregu/dynamo/v2?status.svg)](https://godoc.org/github.com/guregu/dynamo/v2)
-`import "github.com/guregu/dynamo/v2"`
+## dynamo [![GoDoc](https://godoc.org/github.com/connectom-sys/dynamo/v2?status.svg)](https://godoc.org/github.com/connectom-sys/dynamo/v2)
+`import "github.com/connectom-sys/dynamo/v2"`
 
 dynamo is an expressive [DynamoDB](https://aws.amazon.com/dynamodb/) client for Go, with an easy but powerful API. dynamo integrates with the official [AWS SDK v2](https://github.com/aws/aws-sdk-go-v2/).
 
@@ -8,7 +8,7 @@ This library is stable and versioned with Go modules.
 > [!TIP]
 > dynamo v2 is finally released! See [**v2 Migration**](#migrating-from-v1) for tips on migrating from dynamo v1.
 > 
-> For dynamo v1, which uses [aws-sdk-go v1](https://github.com/aws/aws-sdk-go/), see: [**dynamo v1 documentation**](https://pkg.go.dev/github.com/guregu/dynamo).
+> For dynamo v1, which uses [aws-sdk-go v1](https://github.com/aws/aws-sdk-go/), see: [**dynamo v1 documentation**](https://pkg.go.dev/github.com/connectom-sys/dynamo).
 
 ### Example
 
@@ -22,7 +22,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/guregu/dynamo/v2"
+	"github.com/connectom-sys/dynamo/v2"
 )
 
 // Use struct tags much like the standard JSON library,
@@ -95,7 +95,7 @@ table.Put(item{ID: 42}).If("attribute_not_exists(ID)").Run(ctx)
 
 dynamo automatically handles the following interfaces:
 
-* [`dynamo.Marshaler`](https://godoc.org/github.com/guregu/dynamo#Marshaler) and [`dynamo.Unmarshaler`](https://godoc.org/github.com/guregu/dynamo#Unmarshaler)
+* [`dynamo.Marshaler`](https://godoc.org/github.com/connectom-sys/dynamo#Marshaler) and [`dynamo.Unmarshaler`](https://godoc.org/github.com/connectom-sys/dynamo#Unmarshaler)
 * [`dynamodbattribute.Marshaler`](https://godoc.org/github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute#Marshaler) and [`dynamodbattribute.Unmarshaler`](https://godoc.org/github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute#Unmarshaler)
 * [`encoding.TextMarshaler`](https://godoc.org/encoding#TextMarshaler) and [`encoding.TextUnmarshaler`](https://godoc.org/encoding#TextUnmarshaler)
 
@@ -189,7 +189,7 @@ This creates a table with the primary hash key ID and range key Time. It creates
 
 As of v2, dynamo relies on the AWS SDK for retrying. See: [**Retries and Timeouts documentation**](https://aws.github.io/aws-sdk-go-v2/docs/configuring-sdk/retries-timeouts/) for information about how to configure its behavior.
 
-By default, canceled transactions (i.e. errors from conflicting transactions) will not be retried. To get automatic retrying behavior like in v1, use [`dynamo.RetryTxConflicts`](https://godoc.org/github.com/guregu/dynamo/v2#RetryTxConflicts).
+By default, canceled transactions (i.e. errors from conflicting transactions) will not be retried. To get automatic retrying behavior like in v1, use [`dynamo.RetryTxConflicts`](https://godoc.org/github.com/connectom-sys/dynamo/v2#RetryTxConflicts).
 
 ```go
 import (
@@ -199,7 +199,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/retry"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/guregu/dynamo/v2"
+	"github.com/connectom-sys/dynamo/v2"
 )
 
 func main() {
@@ -218,7 +218,7 @@ func main() {
 
 dynamo has been in development before the official AWS libraries were stable. We use a different encoder and decoder than the [dynamodbattribute](https://pkg.go.dev/github.com/jviney/aws-sdk-go-v2/service/dynamodb/dynamodbattribute) package. dynamo uses the `dynamo` struct tag instead of the `dynamodbav` struct tag, and we also prefer to automatically omit invalid values such as empty strings, whereas the dynamodbattribute package substitutes null values for them. Items that satisfy the [`dynamodbattribute.(Un)marshaler`](https://pkg.go.dev/github.com/jviney/aws-sdk-go-v2/service/dynamodb/dynamodbattribute#Marshaler) interfaces are compatibile with both libraries.
 
-In order to use dynamodbattribute's encoding facilities, you must wrap objects passed to dynamo with [`dynamo.AWSEncoding`](https://godoc.org/github.com/guregu/dynamo/v2#AWSEncoding). Here is a quick example:
+In order to use dynamodbattribute's encoding facilities, you must wrap objects passed to dynamo with [`dynamo.AWSEncoding`](https://godoc.org/github.com/connectom-sys/dynamo/v2#AWSEncoding). Here is a quick example:
 
 ```go
 // Notice the use of the dynamodbav struct tag

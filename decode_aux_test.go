@@ -7,7 +7,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/guregu/dynamo/v2"
+	"github.com/connectom-sys/dynamo/v2"
 )
 
 type Coffee struct {
@@ -17,7 +17,7 @@ type Coffee struct {
 func TestEncodingAux(t *testing.T) {
 	// This tests behavior of embedded anonymous (unexported) structs
 	// using the "aux" unmarshaling trick.
-	// See: https://github.com/guregu/dynamo/issues/181
+	// See: https://github.com/connectom-sys/dynamo/issues/181
 
 	in := dynamo.Item{
 		"ID":   &types.AttributeValueMemberS{Value: "intenso"},
