@@ -4,6 +4,7 @@ import (
 	"encoding"
 	"fmt"
 	"reflect"
+	"strconv"
 	"sync"
 
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -206,6 +207,29 @@ retry:
 	if rv.Kind() == reflect.Pointer {
 		rv = indirect(rv)
 		goto retry
+	}
+
+	if flags|flagString != 0 {
+		switch v := av.(type) {
+		case *types.AttributeValueMemberS:
+			// 文字列変換している数値の場合
+			switch gotype.Kind() {
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				n, err := strconv.ParseInt(v.Value, 10, 64)
+				if err != nil {
+					return err
+				}
+				rv.SetInt(n)
+				return nil
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				n, err := strconv.ParseUint(v.Value, 10, 64)
+				if err != nil {
+					return err
+				}
+				rv.SetUint(n)
+				return nil
+			}
+		}
 	}
 
 	// debugf("lookup fail %#v.", unmarshalKey{gotype: gotype, shape: shapeOf(av)})

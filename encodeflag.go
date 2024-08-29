@@ -1,6 +1,8 @@
 package dynamo
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type encodeFlags uint
 
@@ -12,6 +14,7 @@ const (
 	flagAllowEmptyElem
 	flagNull
 	flagUnixTime
+	flagString
 
 	flagNone encodeFlags = 0
 )
@@ -19,7 +22,11 @@ const (
 func fieldInfo(field reflect.StructField) (name string, flags encodeFlags) {
 	tag := field.Tag.Get("dynamo")
 	if tag == "" {
-		return field.Name, flagNone
+		// dynamo tagが無い場合は、json tagを見る
+		tag = field.Tag.Get("json")
+		if tag == "" {
+			return field.Name, flagNone
+		}
 	}
 
 	begin := 0
@@ -54,6 +61,8 @@ func fieldInfo(field reflect.StructField) (name string, flags encodeFlags) {
 			flags |= flagNull
 		case "unixtime":
 			flags |= flagUnixTime
+		case "string": // json tagのstring
+			flags |= flagString
 		}
 	}
 
