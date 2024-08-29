@@ -30,12 +30,13 @@ const offlineSkipMsg = "DYNAMO_TEST_REGION not set"
 
 // widget is the data structure used for integration tests
 type widget struct {
-	UserID int       `dynamo:",hash"`
-	Time   time.Time `dynamo:",range" index:"Msg-Time-index,range"`
-	Msg    string    `index:"Msg-Time-index,hash"`
-	Count  int
-	Meta   map[string]string
-	StrPtr *string `dynamo:",allowempty"`
+	UserID         int       `dynamo:",hash"`
+	Time           time.Time `dynamo:",range" index:"Msg-Time-index,range"`
+	Msg            string    `index:"Msg-Time-index,hash"`
+	Count          int
+	Meta           map[string]string
+	StrPtr         *string `dynamo:",allowempty"`
+	AdditionalData string  `json:"-"`
 }
 
 func TestMain(m *testing.M) {

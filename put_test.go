@@ -16,13 +16,18 @@ func TestPut(t *testing.T) {
 	table := testDB.Table(testTableWidgets)
 	ctx := context.TODO()
 
+	type extension struct {
+		Extension string `json:"extension"`
+	}
 	type widget2 struct {
 		widget
-		List []*string
-		Set1 []string            `dynamo:",set"`
-		Set2 map[string]struct{} `dynamo:",set"`
-		Map1 map[string]string
-		Map2 map[string]*string
+		List       []*string
+		Set1       []string            `dynamo:",set"`
+		Set2       map[string]struct{} `dynamo:",set"`
+		Map1       map[string]string
+		Map2       map[string]*string
+		extension  `json:"-"`
+		AppendData int64 `json:"appendData,omitempty,string"`
 	}
 
 	now := time.Now().UTC()
@@ -47,11 +52,12 @@ func TestPut(t *testing.T) {
 			Time:   now,
 			Msg:    "new",
 		},
-		List: []*string{aws.String("abc"), aws.String(""), aws.String("def"), nil, aws.String("ghi")},
-		Set1: []string{"A", "B", ""},
-		Set2: map[string]struct{}{"C": {}, "D": {}, "": {}},
-		Map1: map[string]string{"A": "hello", "B": ""},
-		Map2: map[string]*string{"C": aws.String("world"), "D": nil, "E": aws.String("")},
+		List:       []*string{aws.String("abc"), aws.String(""), aws.String("def"), nil, aws.String("ghi")},
+		Set1:       []string{"A", "B", ""},
+		Set2:       map[string]struct{}{"C": {}, "D": {}, "": {}},
+		Map1:       map[string]string{"A": "hello", "B": ""},
+		Map2:       map[string]*string{"C": aws.String("world"), "D": nil, "E": aws.String("")},
+		AppendData: 10,
 	}
 	var oldValue widget2
 	var cc ConsumedCapacity

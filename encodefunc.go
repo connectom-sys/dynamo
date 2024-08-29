@@ -539,6 +539,19 @@ type numberType interface {
 func encodeN[T numberType](get func(reflect.Value) T, format func(T, int) string) encodeFunc {
 	return func(rv reflect.Value, flags encodeFlags) (types.AttributeValue, error) {
 		str := format(get(rv), 10)
+		// json tagのstringが指定されている場合、数値でも文字列として扱う
+		if flags&flagString != 0 {
+			if len(str) == 0 {
+				if flags&flagAllowEmpty != 0 {
+					return emptyS, nil
+				}
+				if flags&flagNull != 0 {
+					return nullAV, nil
+				}
+				return nil, nil
+			}
+			return &types.AttributeValueMemberS{Value: str}, nil
+		}
 		return &types.AttributeValueMemberN{Value: str}, nil
 	}
 }
