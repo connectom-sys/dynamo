@@ -254,7 +254,12 @@ func (info *structInfo) isZero(rv reflect.Value) bool {
 			// TODO: encode NULL?
 			continue
 		}
-		if field.isZero != nil && !field.isZero(fv) {
+		if field.isZero == nil {
+			// TODO: https://github.com/guregu/dynamo/issues/247
+			// need to give child structs an isZero
+			continue
+		}
+		if !field.isZero(fv) {
 			return false
 		}
 	}
