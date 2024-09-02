@@ -37,7 +37,7 @@ func isTableExists(err error) bool {
 	return false
 }
 
-func TestAWS(t *testing.T) {
+func TestTableAccessAWS(t *testing.T) {
 	if os.Getenv("DYNAMO_TEST_REGION") != "" {
 		t.Skip("online test skipped")
 	}
@@ -72,5 +72,40 @@ func TestAWS(t *testing.T) {
 		t.Fatal(err)
 	} else {
 		t.Logf("%+v", item)
+	}
+}
+
+type v1DataItem struct {
+	ID   string `dynamo:"id,hash" index:"migrate_test_index,hash"`
+	Name string `dynamo:"name,range"`
+	Code int64  `json:"code,omitempty,string" index:"migrate_test_index,range"`
+}
+
+func TestTableCreate(t *testing.T) {
+	if os.Getenv("DYNAMO_TEST_REGION") != "" {
+		t.Skip("online test skipped")
+	}
+	os.Setenv("AWS_REGION", "ap-northeast-1")
+	os.Setenv("AWS_PROFILE", "media-dev")
+
+	ctx := context.Background()
+	cfg, err := config.LoadDefaultConfig(
+		ctx,
+		config.WithRegion(os.Getenv("AWS_REGION")),
+		config.WithRetryer(func() aws.Retryer {
+			return retry.NewStandard(RetryTxConflicts)
+		}),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	db := New(cfg)
+	tableName := "karasawa_ls_create_table"
+	if err := db.CreateTable(tableName, v1DataItem{}).OnDemand(true).Wait(ctx); err != nil && !isTableExists(err) {
+		t.Fatal(err)
+	}
+	tbl := db.Table(tableName)
+	if err := tbl.DeleteTable().Run(ctx); err != nil {
+		t.Fatal(err)
 	}
 }

@@ -154,7 +154,7 @@ func visitFields(item map[string]types.AttributeValue, rv reflect.Value, seen ma
 		fv := rv.Field(i)
 		isPtr := fv.Type().Kind() == reflect.Ptr
 
-		name, flags := fieldInfo(field)
+		name, _, flags := fieldInfo(field)
 		if name == "-" {
 			// skip
 			continue
@@ -351,7 +351,7 @@ func collectTypes(rt reflect.Type, info *structInfo, trail []int) *structInfo {
 		ft := field.Type
 		isPtr := ft.Kind() == reflect.Ptr
 
-		name, flags := fieldInfo(field)
+		name, _, flags := fieldInfo(field)
 		if name == "-" {
 			// skip
 			continue
@@ -415,7 +415,7 @@ func visitTypeFields(rt reflect.Type, seen map[string]struct{}, trail []int, fn 
 		ft := field.Type
 		isPtr := ft.Kind() == reflect.Ptr
 
-		name, flags := fieldInfo(field)
+		name, _, flags := fieldInfo(field)
 		if name == "-" {
 			// skip
 			continue
