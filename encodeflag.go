@@ -19,13 +19,15 @@ const (
 	flagNone encodeFlags = 0
 )
 
-func fieldInfo(field reflect.StructField) (name string, flags encodeFlags) {
-	tag := field.Tag.Get("dynamo")
+func fieldInfo(field reflect.StructField) (name string, tagName string, flags encodeFlags) {
+	tagName = "dynamo"
+	tag := field.Tag.Get(tagName)
 	if tag == "" {
 		// dynamo tagが無い場合は、json tagを見る
-		tag = field.Tag.Get("json")
+		tagName = "json"
+		tag = field.Tag.Get(tagName)
 		if tag == "" {
-			return field.Name, flagNone
+			return field.Name, "", flagNone
 		}
 	}
 

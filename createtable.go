@@ -268,7 +268,7 @@ func (ct *CreateTable) from(rv reflect.Value) error {
 		field := rv.Type().Field(i)
 		fv := rv.Field(i)
 
-		name, _ := fieldInfo(field)
+		name, tag, _ := fieldInfo(field)
 		if name == "-" {
 			// skip
 			continue
@@ -282,8 +282,8 @@ func (ct *CreateTable) from(rv reflect.Value) error {
 		}
 
 		// primary keys
-		if keyType := keyTypeFromTag(field.Tag.Get("dynamo")); keyType != "" {
-			ct.add(name, typeOf(fv, field.Tag.Get("dynamo")))
+		if keyType := keyTypeFromTag(field.Tag.Get(tag)); keyType != "" {
+			ct.add(name, typeOf(fv, field.Tag.Get(tag)))
 			ct.schema = append(ct.schema, types.KeySchemaElement{
 				AttributeName: &name,
 				KeyType:       types.KeyType(keyType),
@@ -293,7 +293,7 @@ func (ct *CreateTable) from(rv reflect.Value) error {
 		// global secondary index
 		if gsi, ok := tagLookup(string(field.Tag), "index"); ok {
 			for _, index := range gsi {
-				ct.add(name, typeOf(fv, field.Tag.Get("dynamo")))
+				ct.add(name, typeOf(fv, field.Tag.Get(tag)))
 				keyType := keyTypeFromTag(index)
 				indexName := index[:len(index)-len(keyType)-1]
 				idx := ct.globalIndices[indexName]
@@ -308,7 +308,7 @@ func (ct *CreateTable) from(rv reflect.Value) error {
 		// local secondary index
 		if lsi, ok := tagLookup(string(field.Tag), "localIndex"); ok {
 			for _, localIndex := range lsi {
-				ct.add(name, typeOf(fv, field.Tag.Get("dynamo")))
+				ct.add(name, typeOf(fv, field.Tag.Get(tag)))
 				keyType := keyTypeFromTag(localIndex)
 				indexName := localIndex[:len(localIndex)-len(keyType)-1]
 				idx := ct.localIndices[indexName]
@@ -424,6 +424,9 @@ func typeOf(rv reflect.Value, tag string) string {
 		for _, v := range split[1:] {
 			if v == "unixtime" {
 				return "N"
+			}
+			if v == "str" || v == "string" {
+				return "S"
 			}
 		}
 	}
